@@ -13,10 +13,10 @@ def fix_marks(schoolkid):
 
 
 def remove_chastisements(schoolkid):
-    chastiments = Chastisement.objects.filter(
+    chastisements = Chastisement.objects.filter(
         schoolkid__full_name__contains=schoolkid
     )
-    chastiments.delete()
+    chastisements.delete()
 
 
 def create_commendation(schoolkid, lesson):
