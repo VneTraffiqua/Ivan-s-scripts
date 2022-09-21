@@ -2,22 +2,21 @@ import random
 from datacenter.models import Mark, Chastisement, Schoolkid, Lesson, Commendation
 
 
-def fix_marks(schoolkid):
+def fix_marks(student_full_name):
     Mark.objects.filter(
-        schoolkid__full_name__contains=schoolkid,
+        schoolkid__full_name__contains=student_full_name,
         points__in=[1, 2, 3]
     ).update(points=5)
 
 
-
-def remove_chastisements(schoolkid):
+def remove_chastisements(student_full_name):
     chastisements = Chastisement.objects.filter(
-        schoolkid__full_name__contains=schoolkid
+        schoolkid__full_name__contains=student_full_name
     )
     chastisements.delete()
 
 
-def create_commendation(schoolkid, lesson):
+def create_commendation(student_full_name, lesson):
     try:
         commendations = [
             'Теперь у тебя точно все получится!',
@@ -33,20 +32,18 @@ def create_commendation(schoolkid, lesson):
             'Талантливо!',
             'Ты меня приятно удивил!'
             ]
-        schoolkid = Schoolkid.objects.get(full_name=schoolkid)
+        student_full_name = Schoolkid.objects.get(full_name=student_full_name)
         desired_lesson = Lesson.objects.filter(
-            year_of_study=schoolkid.year_of_study,
-            group_letter=schoolkid.group_letter,
+            year_of_study=student_full_name.year_of_study,
+            group_letter=student_full_name.group_letter,
             subject__title=lesson
         ).last()
         Commendation.objects.create(
             text=random.choice(commendations),
             created=desired_lesson.date,
-            schoolkid=schoolkid,
+            schoolkid=student_full_name,
             teacher=desired_lesson.teacher,
             subject=desired_lesson.subject
         )
-
-        create_commendation('Фролов Иван Григорьевич', 'История')
     except:
         print('Введите корректные данные!')
